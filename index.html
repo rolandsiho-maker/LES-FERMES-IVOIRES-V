@@ -19,9 +19,35 @@
       line-height: 1.4;
     }
 
-    .receipt {
-      max-width: 400px;
+    .container {
+      max-width: 1200px;
       margin: 0 auto;
+    }
+
+    .content-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    @media (min-width: 900px) {
+      .content-wrapper {
+        flex-direction: row;
+        align-items: flex-start;
+      }
+
+      .receipt {
+        flex: 0 0 400px;
+        position: sticky;
+        top: 20px;
+      }
+
+      .info-sections {
+        flex: 1;
+      }
+    }
+
+    .receipt {
       background: white;
       padding: 30px 25px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
@@ -165,6 +191,139 @@
       margin-top: 10px;
     }
 
+    /* Sections informatives */
+    .info-sections {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .info-card {
+      background: white;
+      padding: 25px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-left: 5px solid;
+    }
+
+    .info-card.conservation {
+      border-left-color: #2196F3;
+    }
+
+    .info-card.cuisson {
+      border-left-color: #FF9800;
+    }
+
+    .info-card.engagement {
+      border-left-color: #4CAF50;
+    }
+
+    .info-card.service {
+      border-left-color: #9C27B0;
+    }
+
+    .info-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      font-family: Arial, sans-serif;
+    }
+
+    .info-card-header .emoji {
+      font-size: 24px;
+    }
+
+    .info-card-content {
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #333;
+    }
+
+    .info-card-content h3 {
+      font-size: 15px;
+      font-weight: bold;
+      margin: 15px 0 10px 0;
+      color: #000;
+    }
+
+    .info-card-content ul {
+      margin: 10px 0;
+      padding-left: 20px;
+    }
+
+    .info-card-content li {
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+
+    .info-card-content strong {
+      color: #000;
+    }
+
+    .tip-number {
+      display: inline-block;
+      background: #FF9800;
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 24px;
+      font-weight: bold;
+      margin-right: 8px;
+      font-size: 13px;
+    }
+
+    .technique-step {
+      margin-bottom: 15px;
+      padding-left: 5px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #4CAF50;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 3px;
+      font-size: 12px;
+      font-weight: bold;
+      margin: 5px 5px 5px 0;
+    }
+
+    .social-tag {
+      display: inline-block;
+      background: #E91E63;
+      color: white;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: bold;
+      margin: 5px 5px 5px 0;
+    }
+
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%; /* Ratio 16:9 */
+      height: 0;
+      overflow: hidden;
+      margin: 15px 0;
+      background: #000;
+      border-radius: 8px;
+    }
+
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 8px;
+    }
+
     @media print {
       body {
         background: white;
@@ -172,122 +331,254 @@
       .receipt {
         box-shadow: none;
       }
+      .info-sections {
+        display: none;
+      }
     }
   </style>
 </head>
 
 <body>
 
-<div class="receipt">
-  <div class="header">
-    <h1>VERIFICATION PRODUIT</h1>
-    <div class="subtitle">Système de traçabilité : Les Fermes Ivoire</div>
-  </div>
+<div class="container">
+  <div class="content-wrapper">
+    
+    <!-- REÇU (intact) -->
+    <div class="receipt">
+      <div class="header">
+        <h1>LES FERMES IVOIRES</h1>
+        <div class="subtitle">Système de traçabilité alimentaire : Les Fermes Ivoire</div>
+      </div>
 
-  <div class="qr-id">
-    QR CODE: <span id="qrId">—</span>
-  </div>
+      <div class="qr-id">
+        QR CODE: <span id="qrId">—</span>
+      </div>
 
-  <div id="statusBanner" class="status-banner">
-    VERIFICATION EN COURS...
-  </div>
+      <div id="statusBanner" class="status-banner">
+        VERIFICATION EN COURS...
+      </div>
 
-  <div class="section">
-    <div class="section-title">Informations du lot</div>
-    <div class="line">
-      <span class="line-label">Numéro de lot:</span>
-      <span class="line-value" id="lot">—</span>
-    </div>
-    <div class="line">
-      <span class="line-label">Date d'abattage:</span>
-      <span class="line-value" id="abattage">—</span>
-    </div>
-    <div class="line">
-      <span class="line-label">Date limite consommation:</span>
-      <span class="line-value" id="dlc">—</span>
-    </div>
-    <div class="line">
-      <span class="line-label">Information:</span>
-      <span class="line-value" id="infoSupp">—</span>
-    </div>
-  </div>
+      <div class="section">
+        <div class="section-title">Informations du lot</div>
+        <div class="line">
+          <span class="line-label">Numéro de lot:</span>
+          <span class="line-value" id="lot">—</span>
+        </div>
+        <div class="line">
+          <span class="line-label">Date d'abattage:</span>
+          <span class="line-value" id="abattage">—</span>
+        </div>
+        <div class="line">
+          <span class="line-label">Date limite consommation:</span>
+          <span class="line-value" id="dlc">—</span>
+        </div>
+        <div class="line">
+          <span class="line-label">Information:</span>
+          <span class="line-value" id="infoSupp">—</span>
+        </div>
+      </div>
 
-  <div class="divider"></div>
+      <div class="divider"></div>
 
-  <div class="section">
-    <div class="section-title">Caractéristiques produit</div>
-    <div class="line">
-      <span class="line-label">Type de produit:</span>
-      <span class="line-value" id="type">—</span>
-    </div>
-    <div class="line">
-      <span class="line-label">Prix:</span>
-      <span class="line-value" id="prix">—</span>
-    </div>
-    <div class="line">
-      <span class="line-label">Poids:</span>
-      <span class="line-value" id="poids">—</span>
-    </div>
-    <div class="line">
-      <span class="line-label">Origine:</span>
-      <span class="line-value" id="origine">—</span>
-    </div>
-    <div class="line">
-      <span class="line-label">Certification:</span>
-      <span class="line-value" id="certification">—</span>
-    </div>
-  </div>
+      <div class="section">
+        <div class="section-title">Caractéristiques produit</div>
+        <div class="line">
+          <span class="line-label">Type de produit:</span>
+          <span class="line-value" id="type">—</span>
+        </div>
+        <div class="line">
+          <span class="line-label">Prix:</span>
+          <span class="line-value" id="prix">—</span>
+        </div>
+        <div class="line">
+          <span class="line-label">Poids:</span>
+          <span class="line-value" id="poids">—</span>
+        </div>
+        <div class="line">
+          <span class="line-label">Origine:</span>
+          <span class="line-value" id="origine">—</span>
+        </div>
+        <div class="line">
+          <span class="line-label">Certification:</span>
+          <span class="line-value" id="certification">—</span>
+        </div>
+      </div>
 
-  <div class="divider"></div>
+      <div class="divider"></div>
 
-  <div class="important-box" id="statutBox">
-    <div class="title">Statut actuel</div>
-    <div class="value" id="statut">—</div>
-  </div>
+      <div class="important-box" id="statutBox">
+        <div class="title">Statut actuel</div>
+        <div class="value" id="statut">—</div>
+      </div>
 
-  <div class="section">
-    <div class="section-title">Historique de traçabilité</div>
-    <div class="line">
-      <span class="line-label">Enregistré le:</span>
-      <span class="line-value" id="dateEnreg">—</span>
-    </div>
-    <div class="line">
-      <span class="line-label">Vérifié le:</span>
-      <span class="line-value" id="dateVerif">—</span>
-    </div>
-    <div class="line" id="venteInfo" style="display: none;">
-      <span class="line-label">Vendu le:</span>
-      <span class="line-value" id="dateVente">—</span>
-    </div>
-    <div class="line">
-      <span class="line-label">Nb vérifications:</span>
-      <span class="line-value" id="nbVerif">—</span>
-    </div>
-  </div>
+      <div class="section">
+        <div class="section-title">Historique de traçabilité</div>
+        <div class="line">
+          <span class="line-label">Enregistré le:</span>
+          <span class="line-value" id="dateEnreg">—</span>
+        </div>
+        <div class="line">
+          <span class="line-label">Vérifié le:</span>
+          <span class="line-value" id="dateVerif">—</span>
+        </div>
+        <div class="line" id="venteInfo" style="display: none;">
+          <span class="line-label">Vendu le:</span>
+          <span class="line-value" id="dateVente">—</span>
+        </div>
+        <div class="line">
+          <span class="line-label">Nb vérifications:</span>
+          <span class="line-value" id="nbVerif">—</span>
+        </div>
+      </div>
 
-  <div class="divider"></div>
+      <div class="divider"></div>
 
-  <div class="section">
-    <div class="section-title">Informations complémentaires</div>
-    <div class="line">
-      <span class="line-label">Conservation:</span>
-      <span class="line-value" id="conservation">—</span>
+      <div class="section">
+        <div class="section-title">PROTOCOLE DE CONSERVATION</div>
+        <div class="line">
+          <span class="line-label">Conservation:</span>
+          <span class="line-value" id="conservation">—</span>
+        </div>
+        <div class="line">
+          <span class="line-label">Température:</span>
+          <span class="line-value" id="temperature">—</span>
+        </div>
+      </div>
+
+      <div class="timestamp">
+        Dernière mise à jour: <span id="lastUpdate">—</span>
+      </div>
+
+      <div class="footer">
+        DOCUMENT OFFICIEL DE TRACABILITE<br>
+        Système certifié conforme aux normes sanitaires<br>
+        En cas de doute, contactez le service client
+      </div>
     </div>
-    <div class="line">
-      <span class="line-label">Température:</span>
-      <span class="line-value" id="temperature">—</span>
+
+    <!-- SECTIONS INFORMATIVES -->
+    <div class="info-sections">
+      
+      <!-- Conservation -->
+      <div class="info-card conservation">
+        <div class="info-card-header">
+          <span>PROTOCOLE DE CONSERVATION</span>
+        </div>
+        <div class="info-card-content">
+          <p style="font-style: italic; margin-bottom: 15px; color: #666;">
+            (Qualité Premium)
+          </p>
+          
+          <!-- Zone vidéo YouTube -->
+          <div class="video-container">
+            <iframe id="conservationVideo" width="100%" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          
+          <p>Pour préserver l'intégrité nutritionnelle et la saveur de la chair :</p>
+          
+          <h3>• Réfrigération (0° à 3°C)</h3>
+          <p>Conservez dans l'emballage d'origine. Évitez les variations de température : placez votre volaille au centre du réfrigérateur immédiatement après achat.</p>
+          
+          <h3>• Congélation Professionnelle</h3>
+          <p>Pour une conservation longue durée (jusqu'à 12 mois), emballez sous vide ou dans un sac de congélation en expulsant un maximum d'air pour éviter les brûlures de froid.</p>
+          
+          <h3>• Règle d'Hygiène</h3>
+          <p>Ne jamais recongeler un produit décongelé. Décongelez lentement au réfrigérateur (12h) pour maintenir la tendreté des fibres.</p>
+        </div>
+      </div>
+
+      <!-- Cuisson -->
+      <div class="info-card cuisson">
+        <div class="info-card-header">
+          <span>L'ART DE CUIRE LA SŒUR MIROIR</span>
+        </div>
+        <div class="info-card-content">
+          <p style="margin-bottom: 15px;">
+            Suivez ces <strong>3 secrets de chefs</strong> pour une expérience gustative exceptionnelle :
+          </p>
+          
+          <!-- Zone vidéo YouTube -->
+          <div class="video-container">
+            <iframe id="cuissonVideo" width="100%" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          
+          <div class="technique-step">
+            <h3><span class="tip-number">1</span>Le Tempérage (Crucial)</h3>
+            <p>Ne cuisez jamais votre poulet sortant du froid. Laissez-le reposer 20 min à température ambiante. Cela permet une cuisson uniforme et une viande incroyablement juteuse.</p>
+          </div>
+          
+          <div class="technique-step">
+            <h3><span class="tip-number">2</span>La Technique de la "Peau de Verre"</h3>
+            <p>Pour une peau dorée et croustillante : séchez la peau avec un linge propre, massez-la avec un filet d'huile d'olive et de la fleur de sel. Enfournez à 180°C.</p>
+          </div>
+          
+          <div class="technique-step">
+            <h3><span class="tip-number">3</span>Le Repos Post-Cuisson</h3>
+            <p>Une fois cuit, laissez votre poulet reposer 10 min sous un papier aluminium avant de le découper. Les jus se réclameront dans la viande pour un moelleux incomparable.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Engagement -->
+      <div class="info-card engagement">
+        <div class="info-card-header">
+          <span>NOTRE ENGAGEMENT "MIROIR"</span>
+        </div>
+        <div class="info-card-content">
+          <p style="margin-bottom: 15px;">
+            Choisir La Sœur Miroir, c'est choisir la clarté. Nous nous engageons sur :
+          </p>
+          
+          <!-- Zone vidéo YouTube -->
+          <div class="video-container">
+            <iframe id="engagementVideo" width="100%" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          
+          <div>
+            <span class="badge">✓ Zéro Antibiotiques</span>
+            <span class="badge">✓ Circuit Court</span>
+            <span class="badge">✓ Bien-être Animal</span>
+          </div>
+          
+          <ul style="margin-top: 15px;">
+            <li><strong>Zéro Antibiotiques</strong> de croissance.</li>
+            <li><strong>Circuit Court :</strong> Réduction de l'empreinte carbone et soutien direct aux éleveurs.</li>
+            <li><strong>Éthique :</strong> Respect des normes de bien-être animal tout au long du cycle.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Service Client -->
+      <div class="info-card service">
+        <div class="info-card-header">
+          <span>SERVICE CLIENT & FIDÉLITÉ</span>
+        </div>
+        <div class="info-card-content">
+          <p style="margin-bottom: 15px;">
+            <strong>Satisfait de votre expérience ?</strong>
+          </p>
+          
+          <!-- Zone vidéo YouTube -->
+          <div class="video-container">
+            <iframe id="serviceVideo" width="100%" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          
+          <p style="margin-bottom: 10px;">
+            📸 Prenez votre plat en photo et taguez-nous sur Instagram :
+          </p>
+          
+          <div>
+            <span class="social-tag">@LaSoeurMiroir</span>
+          </div>
+          
+          <p style="margin-top: 20px; padding: 15px; background: #f5f5f5; border-radius: 5px;">
+            <strong>💡 Astuce :</strong> Partagez vos recettes et tentez de gagner des bons d'achat mensuels !
+          </p>
+        </div>
+      </div>
+
     </div>
-  </div>
 
-  <div class="timestamp">
-    Dernière mise à jour: <span id="lastUpdate">—</span>
-  </div>
-
-  <div class="footer">
-    DOCUMENT OFFICIEL DE TRACABILITE<br>
-    Système certifié conforme aux normes sanitaires<br>
-    En cas de doute, contactez le service client<br>
-    <strong>Tel: 0789453552</strong>
   </div>
 </div>
 
@@ -297,22 +588,39 @@
     qrId: "QR-058",
     lot: "VAGUE-2025-07",
     abattage: "18/07/2025",
-    dlc: "25/07/2025",
-    infoSupp: "Votre information ici",
-    type: "Poulet entier",
+    dlc: "25/08/2025",
+    infoSupp: "Produit frais disponible",
+    type: "Poulet de Chair entier",
     prix: "3500 FCFA",
     poids: "2.5 kg",
     origine: "Côte d'Ivoire - Oumé",
-    certification: "Label Rouge",
+    certification: "Les Fermes Ivoires",
     statut: "ACTIF", // ACTIF | VENDU | EXPIRE | FAKE
     dateEnreg: "18/07/2025 14:30",
     dateVerif: "26/12/2025 10:45",
-    dateVente: "19/07/2025 09:32",
-    nbVerif: "00",
+    dateVente: "",
+    nbVerif: "12",
     conservation: "Entre 0°C et +4°C",
     temperature: "Chaîne du froid respectée",
-    lastUpdate: "26/12/2025 10:45:12"
+    lastUpdate: "26/12/2025 10:45:12",
+    // Vidéos à charger selon le statut
+    videos: {
+      conservation: "dQw4w9WgXcQ",  // Remplacer par l'ID YouTube
+      cuisson: "dQw4w9WgXcQ",       // Remplacer par l'ID YouTube
+      engagement: "dQw4w9WgXcQ",    // Remplacer par l'ID YouTube
+      service: "dQw4w9WgXcQ"        // Remplacer par l'ID YouTube
+    }
   };
+
+  // Exemples de configuration selon le statut
+  // Pour VENDU :
+  // videos: { conservation: "abc123", cuisson: "def456", engagement: "ghi789", service: "jkl012" }
+  
+  // Pour EXPIRE :
+  // videos: { conservation: "xyz789", cuisson: "uvw456", engagement: "rst123", service: "opq999" }
+  
+  // Pour FAKE :
+  // videos: { conservation: "fake01", cuisson: "fake02", engagement: "fake03", service: "fake04" }
 
   function render(data) {
     document.getElementById("qrId").textContent = data.qrId;
@@ -335,6 +643,22 @@
     const banner = document.getElementById("statusBanner");
     const statutBox = document.getElementById("statutBox");
     const venteInfo = document.getElementById("venteInfo");
+
+    // Charger les vidéos selon le statut
+    if (data.videos) {
+      if (data.videos.conservation) {
+        document.getElementById("conservationVideo").src = "https://www.youtube.com/embed/" + data.videos.conservation;
+      }
+      if (data.videos.cuisson) {
+        document.getElementById("cuissonVideo").src = "https://www.youtube.com/embed/" + data.videos.cuisson;
+      }
+      if (data.videos.engagement) {
+        document.getElementById("engagementVideo").src = "https://www.youtube.com/embed/" + data.videos.engagement;
+      }
+      if (data.videos.service) {
+        document.getElementById("serviceVideo").src = "https://www.youtube.com/embed/" + data.videos.service;
+      }
+    }
 
     if (data.statut === "ACTIF") {
       banner.textContent = "✓ PRODUIT AUTHENTIQUE";
@@ -378,5 +702,4 @@
 </script>
 
 </body>
-
 </html>
