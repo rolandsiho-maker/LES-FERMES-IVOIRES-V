@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Reçu de vérification</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Courier New', monospace;
+      background: #e8e8e8;
+      padding: 20px;
+      line-height: 1.4;
+    }
+
+    .receipt {
+      max-width: 400px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px 25px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .header {
+      text-align: center;
+      border-bottom: 2px dashed #000;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 5px;
+      letter-spacing: 1px;
+    }
+
+    .header .subtitle {
+      font-size: 11px;
+      color: #666;
+    }
+
+    .status-banner {
+      text-align: center;
+      padding: 15px;
+      margin-bottom: 20px;
+      font-weight: bold;
+      font-size: 16px;
+      border: 3px solid;
+      letter-spacing: 0.5px;
+    }
+
+    .status-ok {
+      background: #4CAF50;
+      color: white;
+      border-color: #2E7D32;
+    }
+
+    .status-sold {
+      background: #FFC107;
+      color: #000;
+      border-color: #F57F17;
+    }
+
+    .status-expired {
+      background: #F44336;
+      color: white;
+      border-color: #C62828;
+    }
+
+    .status-fake {
+      background: #000;
+      color: white;
+      border-color: #000;
+    }
+
+    .section {
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: bold;
+      color: #000;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 3px;
+    }
+
+    .line {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    .line-label {
+      color: #333;
+      font-weight: normal;
+    }
+
+    .line-value {
+      font-weight: bold;
+      text-align: right;
+      color: #000;
+    }
+
+    .highlight {
+      background: #FFEB3B;
+      padding: 2px 4px;
+    }
+
+    .divider {
+      border-top: 1px dashed #999;
+      margin: 15px 0;
+    }
+
+    .important-box {
+      border: 2px solid #000;
+      padding: 12px;
+      margin: 15px 0;
+      background: #f9f9f9;
+    }
+
+    .important-box .title {
+      font-weight: bold;
+      font-size: 13px;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+    }
+
+    .important-box .value {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 2px dashed #000;
+      font-size: 10px;
+      color: #666;
+    }
+
+    .qr-id {
+      text-align: center;
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      letter-spacing: 2px;
+    }
+
+    .timestamp {
+      text-align: center;
+      font-size: 11px;
+      color: #666;
+      margin-top: 10px;
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+      .receipt {
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="receipt">
+  <div class="header">
+    <h1>VERIFICATION PRODUIT</h1>
+    <div class="subtitle">Système de traçabilité : Les Fermes Ivoire</div>
+  </div>
+
+  <div class="qr-id">
+    QR CODE: <span id="qrId">—</span>
+  </div>
+
+  <div id="statusBanner" class="status-banner">
+    VERIFICATION EN COURS...
+  </div>
+
+  <div class="section">
+    <div class="section-title">Informations du lot</div>
+    <div class="line">
+      <span class="line-label">Numéro de lot:</span>
+      <span class="line-value" id="lot">—</span>
+    </div>
+    <div class="line">
+      <span class="line-label">Date d'abattage:</span>
+      <span class="line-value" id="abattage">—</span>
+    </div>
+    <div class="line">
+      <span class="line-label">Date limite consommation:</span>
+      <span class="line-value" id="dlc">—</span>
+    </div>
+    <div class="line">
+      <span class="line-label">Information:</span>
+      <span class="line-value" id="infoSupp">—</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-title">Caractéristiques produit</div>
+    <div class="line">
+      <span class="line-label">Type de produit:</span>
+      <span class="line-value" id="type">—</span>
+    </div>
+    <div class="line">
+      <span class="line-label">Prix:</span>
+      <span class="line-value" id="prix">—</span>
+    </div>
+    <div class="line">
+      <span class="line-label">Poids:</span>
+      <span class="line-value" id="poids">—</span>
+    </div>
+    <div class="line">
+      <span class="line-label">Origine:</span>
+      <span class="line-value" id="origine">—</span>
+    </div>
+    <div class="line">
+      <span class="line-label">Certification:</span>
+      <span class="line-value" id="certification">—</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="important-box" id="statutBox">
+    <div class="title">Statut actuel</div>
+    <div class="value" id="statut">—</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Historique de traçabilité</div>
+    <div class="line">
+      <span class="line-label">Enregistré le:</span>
+      <span class="line-value" id="dateEnreg">—</span>
+    </div>
+    <div class="line">
+      <span class="line-label">Vérifié le:</span>
+      <span class="line-value" id="dateVerif">—</span>
+    </div>
+    <div class="line" id="venteInfo" style="display: none;">
+      <span class="line-label">Vendu le:</span>
+      <span class="line-value" id="dateVente">—</span>
+    </div>
+    <div class="line">
+      <span class="line-label">Nb vérifications:</span>
+      <span class="line-value" id="nbVerif">—</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-title">Informations complémentaires</div>
+    <div class="line">
+      <span class="line-label">Conservation:</span>
+      <span class="line-value" id="conservation">—</span>
+    </div>
+    <div class="line">
+      <span class="line-label">Température:</span>
+      <span class="line-value" id="temperature">—</span>
+    </div>
+  </div>
+
+  <div class="timestamp">
+    Dernière mise à jour: <span id="lastUpdate">—</span>
+  </div>
+
+  <div class="footer">
+    DOCUMENT OFFICIEL DE TRACABILITE<br>
+    Système certifié conforme aux normes sanitaires<br>
+    En cas de doute, contactez le service client<br>
+    <strong>Tel: 0789453552</strong>
+  </div>
+</div>
+
+<script>
+  // Simulation de réponse serveur
+  const fakeApiResponse = {
+    qrId: "QR-058",
+    lot: "VAGUE-2025-07",
+    abattage: "18/07/2025",
+    dlc: "25/07/2025",
+    infoSupp: "Votre information ici",
+    type: "Poulet entier",
+    prix: "3500 FCFA",
+    poids: "2.5 kg",
+    origine: "Côte d'Ivoire - Oumé",
+    certification: "Label Rouge",
+    statut: "ACTIF", // ACTIF | VENDU | EXPIRE | FAKE
+    dateEnreg: "18/07/2025 14:30",
+    dateVerif: "26/12/2025 10:45",
+    dateVente: "19/07/2025 09:32",
+    nbVerif: "3",
+    conservation: "Entre 0°C et +4°C",
+    temperature: "Chaîne du froid respectée",
+    lastUpdate: "26/12/2025 10:45:12"
+  };
+
+  function render(data) {
+    document.getElementById("qrId").textContent = data.qrId;
+    document.getElementById("lot").textContent = data.lot;
+    document.getElementById("abattage").textContent = data.abattage;
+    document.getElementById("dlc").textContent = data.dlc;
+    document.getElementById("infoSupp").textContent = data.infoSupp;
+    document.getElementById("type").textContent = data.type;
+    document.getElementById("prix").textContent = data.prix;
+    document.getElementById("poids").textContent = data.poids;
+    document.getElementById("origine").textContent = data.origine;
+    document.getElementById("certification").textContent = data.certification;
+    document.getElementById("dateEnreg").textContent = data.dateEnreg;
+    document.getElementById("dateVerif").textContent = data.dateVerif;
+    document.getElementById("nbVerif").textContent = data.nbVerif;
+    document.getElementById("conservation").textContent = data.conservation;
+    document.getElementById("temperature").textContent = data.temperature;
+    document.getElementById("lastUpdate").textContent = data.lastUpdate;
+
+    const banner = document.getElementById("statusBanner");
+    const statutBox = document.getElementById("statutBox");
+    const venteInfo = document.getElementById("venteInfo");
+
+    if (data.statut === "ACTIF") {
+      banner.textContent = "✓ PRODUIT AUTHENTIQUE";
+      banner.className = "status-banner status-ok";
+      document.getElementById("statut").textContent = "DISPONIBLE À LA VENTE";
+      statutBox.style.borderColor = "#4CAF50";
+      statutBox.style.background = "#E8F5E9";
+    }
+
+    if (data.statut === "VENDU") {
+      banner.textContent = "PRODUIT DEJA VENDU";
+      banner.className = "status-banner status-sold";
+      document.getElementById("statut").textContent = "VENDU - " + data.dateVente;
+      statutBox.style.borderColor = "#FFC107";
+      statutBox.style.background = "#FFF9C4";
+      venteInfo.style.display = "flex";
+      document.getElementById("dateVente").textContent = data.dateVente;
+    }
+
+    if (data.statut === "EXPIRE") {
+      banner.textContent = "⚠ PRODUIT EXPIRE";
+      banner.className = "status-banner status-expired";
+      document.getElementById("statut").textContent = "NE PAS CONSOMMER";
+      statutBox.style.borderColor = "#F44336";
+      statutBox.style.background = "#FFCDD2";
+    }
+
+    if (data.statut === "FAKE") {
+      banner.textContent = "ATTENTION - QR INVALIDE";
+      banner.className = "status-banner status-fake";
+      document.getElementById("statut").textContent = "PRODUIT NON AUTHENTIFIE";
+      statutBox.style.borderColor = "#000";
+      statutBox.style.background = "#FFEBEE";
+    }
+  }
+
+  // Simulation chargement
+  setTimeout(() => {
+    render(fakeApiResponse);
+  }, 600);
+</script>
+
+</body>
+</html>
